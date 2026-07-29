@@ -1,0 +1,95 @@
+# ============================================================
+# ruleset_L3_brand.yaml — 品牌与格式规范规则集
+# AKO_qc_agent L3 品牌与格式规范校验
+# ============================================================
+
+ruleset_id: L3_brand
+version: "1.0.0"
+description: AKO 品牌色系、文风、编号体系校验规则
+
+# ---- 品牌色系定义 ----
+brand_colors:
+  primary: "#EBDAB9"       # 主色（暖米色）
+  anchor: "#231E1C"        # 锚点色（深棕黑）
+  auxiliary:
+    - "#A08C64"            # 辅助色 1
+    - "#B99B5F"            # 辅助色 2
+  forbidden_primary:
+    - "#FFFFFF"            # 禁止纯白作主色
+    - "#000000"            # 禁止纯黑作主色
+
+# ---- AI 痕迹禁用词库 ----
+ai_trace_patterns:
+  # 过度修辞
+  exaggerated:
+    - "在时代的浪潮中"
+    - "以匠心铸就"
+    - "这不仅.*更是"
+    - "辉煌"
+    - "划时代"
+    - "颠覆性"
+    - "引领未来"
+  # 过度破折号（连续破折号）
+  excessive_dashes:
+    pattern: "[—–]{2,}"
+  # 三段式排比
+  triple_parallel:
+    pattern: "是.*是.*是"
+
+# ---- 编号体系规范 ----
+numbering:
+  chapter:
+    correct_pattern: "^\\d+\\.\\d*\\.?\\d*\\.?\\s"
+    description: "章节编号使用 1. / 1.1 / 1.1.1 格式"
+  wrong_patterns:
+    - pattern: "^第[一二三四五六七八九十]+[章节]"
+      description: "禁止使用「第一章」「第二节」"
+    - pattern: "^Section\\s+\\d+"
+      description: "禁止使用「Section 1」"
+    - pattern: "^Part\\s+[IVX]+"
+      description: "禁止使用「Part I」"
+  table:
+    correct_pattern: "Tab-\\d+"
+    description: "表格编号使用 Tab-1、Tab-2"
+  figure:
+    correct_pattern: "Fig-\\d+"
+    description: "图片编号使用 Fig-1、Fig-2"
+
+# ---- 检测规则 ----
+rules:
+  - rule_id: L3-001
+    name: 品牌色系合规
+    description: 可视化输出主色必须使用 AKO 品牌色，禁止纯白/纯黑作主色
+    target_field: text_content
+    condition:
+      operator: color_check
+      forbidden: "#FFFFFF"
+    severity: WARN
+    error_msg: "发现禁止色 {value} 作为主色使用，应使用品牌主色 #EBDAB9"
+
+  - rule_id: L3-002
+    name: AI 痕迹检测
+    description: 禁止过度修辞、夸张表述、连续破折号
+    target_field: text_content
+    condition:
+      operator: ai_trace_check
+    severity: WARN
+    error_msg: "发现 AI 生成痕迹：{value}，应使用简洁专业的工程语言"
+
+  - rule_id: L3-003
+    name: 章节编号统一
+    description: 章节编号必须使用 1. / 1.1 / 1.1.1 格式
+    target_field: text_content
+    condition:
+      operator: numbering_check
+    severity: WARN
+    error_msg: "发现非标准章节编号：{value}，统一使用 1. / 1.1 / 1.1.1 格式"
+
+  - rule_id: L3-004
+    name: 图表编号规范
+    description: 表格使用 Tab-N，图片使用 Fig-N
+    target_field: text_content
+    condition:
+      operator: figure_table_check
+    severity: WARN
+    error_msg: "图表编号不规范：{value}，表格使用 Tab-N，图片使用 Fig-N"

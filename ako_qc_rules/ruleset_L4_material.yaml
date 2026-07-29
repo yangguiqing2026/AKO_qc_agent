@@ -1,0 +1,70 @@
+# ============================================================
+# ruleset_L4_material.yaml — 材料参数规则集
+# AKO_qc_agent L4 业务逻辑校验
+# ============================================================
+
+ruleset_id: L4_material
+version: "1.0.0"
+description: 材料参数自洽性与合理性校验规则
+
+# ---- 材料参数注册表 ----
+material_registry:
+  concrete:
+    C15: { fc: 7.2, ft: 0.91, Ec: 22000 }
+    C20: { fc: 9.6, ft: 1.10, Ec: 25500 }
+    C25: { fc: 11.9, ft: 1.27, Ec: 28000 }
+    C30: { fc: 14.3, ft: 1.43, Ec: 30000 }
+    C35: { fc: 16.7, ft: 1.57, Ec: 31500 }
+    C40: { fc: 19.1, ft: 1.71, Ec: 32500 }
+    C45: { fc: 21.1, ft: 1.80, Ec: 33500 }
+    C50: { fc: 23.1, ft: 1.89, Ec: 34500 }
+    # 陶粒混凝土（轻骨料）
+    LC20: { fc: 9.6, ft: 1.0, Ec: 18000 }
+    LC25: { fc: 11.9, ft: 1.1, Ec: 20000 }
+    LC30: { fc: 14.3, ft: 1.2, Ec: 22000 }
+
+  steel:
+    HPB300: { fy: 270, Es: 210000 }
+    HRB400: { fy: 360, Es: 200000 }
+    HRB500: { fy: 435, Es: 200000 }
+
+  # 最小配筋率（按混凝土强度等级）
+  min_reinforcement_rate: 0.002  # 0.2%
+
+rules:
+  # ---- 混凝土强度自洽 ----
+  - rule_id: L4-101
+    name: 混凝土强度等级-参数自洽
+    description: 混凝土强度等级与轴心抗压强度设计值必须匹配
+    target_field: concrete_grade
+    condition:
+      operator: material_match
+      lookup_table: material_registry.concrete
+      check_fields: [fc, ft, Ec]
+    severity: ERROR
+    error_msg: "混凝土等级 {grade} 的参数（fc={fc}, ft={ft}, Ec={Ec}）与注册表不一致"
+
+  # ---- 钢筋强度自洽 ----
+  - rule_id: L4-102
+    name: 钢筋牌号-参数自洽
+    description: 钢筋牌号与屈服强度设计值必须匹配
+    target_field: steel_grade
+    condition:
+      operator: material_match
+      lookup_table: material_registry.steel
+      check_fields: [fy, Es]
+    severity: ERROR
+    error_msg: "钢筋牌号 {grade} 的参数（fy={fy}, Es={Es}）与注册表不一致"
+
+  # ---- 材料-工况匹配 ----
+  - rule_id: L4-103
+    name: 材料等级与工况匹配
+    description: 材料参数不得与工况描述矛盾（如 LC25 不得使用 C30 参数）
+    target_field: material_usage
+    condition:
+      operator: cross_check
+      pairs:
+        - [concrete_grade, concrete_compressive_strength]
+        - [steel_grade, steel_yield_strength]
+    severity: ERROR
+    error_msg: "材料 {material_grade} 使用了 {mismatched_value}，与注册表中 {expected_value} 不符"

@@ -1,0 +1,71 @@
+[2026-07-29 06:18:46] INFO: === AKO Push 启动 ===
+[2026-07-29 06:18:46] INFO: [Step 1/5] 网络探测...
+[2026-07-29 06:18:46] INFO: 开始网络探测...
+[2026-07-29 06:18:50] INFO: 探测 github.com (ping): ✓
+[2026-07-29 06:18:50] INFO: 探测 gitee.com (ping): ✓
+[2026-07-29 06:18:50] INFO: 探测 git@github.com (ssh): ✓
+[2026-07-29 06:18:50] INFO: 探测 git@gitee.com (ssh): ✓
+[2026-07-29 06:18:50] INFO: 探测 https://github.com (https): ✓
+[2026-07-29 06:18:50] INFO: 探测 https://gitee.com (https): ✓
+[2026-07-29 06:18:50] INFO: 网络探测完成 {"github":{"ping":true,"ssh":true,"https":true},"gitee":{"ping":true,"ssh":true,"https":true}}
+[2026-07-29 06:18:50] INFO: 网络探测完成 {"reachable":true}
+[2026-07-29 06:18:50] INFO: [Step 2/5] 认证检测...
+[2026-07-29 06:18:50] INFO: 开始认证检测...
+[2026-07-29 06:18:50] INFO: SSH Key 检测: 存在 (id_ed25519.pub)
+[2026-07-29 06:18:50] WARN: 获取 git remote 失败 "fatal: not a git repository (or any of the parent directories): .git\n"
+[2026-07-29 06:18:50] INFO: Credential Helper: manager
+[2026-07-29 06:18:51] INFO: Git User: ggggggyu12345 <ggggggyu12345@noreply.gitcode.com>
+[2026-07-29 06:18:51] INFO: 认证检测完成 {"allPassed":false}
+[2026-07-29 06:18:51] INFO: 认证检测完成 {"allPassed":false}
+[2026-07-29 06:18:51] WARN: 未配置 origin remote
+[2026-07-29 06:18:51] INFO: [Step 3/5] 冲突预判...
+[2026-07-29 06:18:51] INFO: 开始冲突预判...
+[2026-07-29 06:18:51] WARN: Fetch origin 失败 "fatal: not a git repository (or any of the parent directories): .git\n"
+[2026-07-29 06:18:51] WARN: Fetch gitee 失败 "fatal: not a git repository (or any of the parent directories): .git\n"
+[2026-07-29 06:18:52] INFO: 冲突预判完成 {"needsRebase":false}
+[2026-07-29 06:18:52] INFO: 无冲突，准备推送
+[2026-07-29 06:18:52] INFO: [Step 4/5] 推送执行 (4层 fallback)...
+[2026-07-29 06:18:53] ERROR: 无法获取当前分支 {"code":128,"killed":false,"signal":null,"cmd":"git rev-parse --abbrev-ref HEAD"}
+[2026-07-29 06:18:53] INFO: 推送任务已加入队列 {"commit":"unknown","branch":"unknown"}
+[2026-07-29 06:18:53] ERROR: 全平台推送失败，已加入队列 {"branch":"unknown","error":"Cannot determine current branch"}
+[2026-07-29 06:18:53] ERROR: === AKO Push 失败 ✗ ===
+[2026-07-29 06:21:32] INFO: === AKO Push 启动 ===
+[2026-07-29 06:21:32] INFO: [Step 1/5] 网络探测...
+[2026-07-29 06:21:32] INFO: 开始网络探测...
+[2026-07-29 06:21:35] INFO: 探测 github.com (ping): ✓
+[2026-07-29 06:21:35] INFO: 探测 gitee.com (ping): ✓
+[2026-07-29 06:21:35] INFO: 探测 git@github.com (ssh): ✓
+[2026-07-29 06:21:35] INFO: 探测 git@gitee.com (ssh): ✓
+[2026-07-29 06:21:35] INFO: 探测 https://github.com (https): ✓
+[2026-07-29 06:21:35] INFO: 探测 https://gitee.com (https): ✓
+[2026-07-29 06:21:35] INFO: 网络探测完成 {"github":{"ping":true,"ssh":true,"https":true},"gitee":{"ping":true,"ssh":true,"https":true}}
+[2026-07-29 06:21:35] INFO: 网络探测完成 {"reachable":true}
+[2026-07-29 06:21:35] INFO: [Step 2/5] 认证检测...
+[2026-07-29 06:21:35] INFO: 开始认证检测...
+[2026-07-29 06:21:35] INFO: SSH Key 检测: 存在 (id_ed25519.pub)
+[2026-07-29 06:21:35] WARN: 获取 git remote 失败 "fatal: not a git repository (or any of the parent directories): .git\n"
+[2026-07-29 06:21:35] INFO: Credential Helper: manager
+[2026-07-29 06:21:35] INFO: Git User: ggggggyu12345 <ggggggyu12345@noreply.gitcode.com>
+[2026-07-29 06:21:35] INFO: 认证检测完成 {"allPassed":false}
+[2026-07-29 06:21:35] INFO: 认证检测完成 {"allPassed":false}
+[2026-07-29 06:21:35] WARN: 未配置 origin remote
+[2026-07-29 06:21:35] INFO: [Step 3/5] 冲突预判...
+[2026-07-29 06:21:35] INFO: 开始冲突预判...
+[2026-07-29 06:21:36] WARN: Fetch origin 失败 "fatal: not a git repository (or any of the parent directories): .git\n"
+[2026-07-29 06:21:36] WARN: Fetch gitee 失败 "fatal: not a git repository (or any of the parent directories): .git\n"
+[2026-07-29 06:21:36] INFO: 冲突预判完成 {"needsRebase":false}
+[2026-07-29 06:21:36] INFO: 无冲突，准备推送
+[2026-07-29 06:21:36] INFO: [Step 4/5] 推送执行 (4层 fallback)...
+[2026-07-29 06:21:36] ERROR: 无法获取当前分支 {"code":128,"killed":false,"signal":null,"cmd":"git rev-parse --abbrev-ref HEAD"}
+[2026-07-29 06:21:36] INFO: 推送任务已加入队列 {"commit":"unknown","branch":"unknown"}
+[2026-07-29 06:21:36] ERROR: 全平台推送失败，已加入队列 {"branch":"unknown","error":"Cannot determine current branch"}
+[2026-07-29 06:21:36] ERROR: === AKO Push 失败 ✗ ===
+[2026-07-29 06:23:46] INFO: 处理推送队列: 2 个待处理任务
+[2026-07-29 06:23:46] INFO: 重试队列任务: commit=unknown, branch=unknown, retry=0
+[2026-07-29 06:23:46] ERROR: 无法获取当前分支 {"code":128,"killed":false,"signal":null,"cmd":"git rev-parse --abbrev-ref HEAD"}
+[2026-07-29 06:23:46] INFO: 队列更新: unknown → pending
+[2026-07-29 06:23:46] WARN: 队列重试失败: unknown, 将继续重试
+[2026-07-29 06:23:46] INFO: 重试队列任务: commit=unknown, branch=unknown, retry=0
+[2026-07-29 06:23:46] ERROR: 无法获取当前分支 {"code":128,"killed":false,"signal":null,"cmd":"git rev-parse --abbrev-ref HEAD"}
+[2026-07-29 06:23:46] INFO: 队列更新: unknown → pending
+[2026-07-29 06:23:46] WARN: 队列重试失败: unknown, 将继续重试

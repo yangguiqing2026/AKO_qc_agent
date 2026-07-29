@@ -1,0 +1,49 @@
+# ============================================================
+# ruleset_L4_logic.yaml — 逻辑一致性规则集
+# AKO_qc_agent L4 业务逻辑校验
+# ============================================================
+
+ruleset_id: L4_logic
+version: "1.0.0"
+description: 结论与前提逻辑一致性校验规则
+
+rules:
+  # ---- 矛盾检测 ----
+  - rule_id: L4-201
+    name: 前提-结论矛盾检测
+    description: 检测文本中是否存在前后矛盾的论断
+    target_field: text_content
+    condition:
+      operator: contradiction_check
+      contradiction_pairs:
+        - keywords_positive: ["不考虑地震作用", "非抗震"]
+          keywords_negative: ["抗震构造措施", "抗震等级", "抗震设防"]
+        - keywords_positive: ["轴心受压"]
+          keywords_negative: ["受弯", "偏心受拉"]
+    severity: ERROR
+    error_msg: "文本存在逻辑矛盾：前文提及「{positive}」，后文出现「{negative}」"
+
+  # ---- 单位完整性 ----
+  - rule_id: L4-202
+    name: 数值单位完整性
+    description: 所有数值必须附带物理单位
+    target_field: text_content
+    condition:
+      operator: unit_required
+      number_pattern: "\\d+\\.?\\d*"
+      required_units: ["kN", "N/mm²", "mm", "mm²", "m", "%", "°C", "h"]
+    severity: WARN
+    error_msg: "数值 {value} 缺少单位"
+
+  # ---- 精度校验 ----
+  - rule_id: L4-203
+    name: 数值精度校验
+    description: 力的精度不低于 0.01 kN，应力精度不低于 0.01 N/mm²
+    target_field: numerical_values
+    condition:
+      operator: precision_check
+      precision_rules:
+        force: { unit: "kN", min_precision: 0.01 }
+        stress: { unit: "N/mm²", min_precision: 0.01 }
+    severity: WARN
+    error_msg: "数值 {value} {unit} 精度不足，要求至少 {min_precision}"

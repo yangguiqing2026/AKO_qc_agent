@@ -1,0 +1,22 @@
+{
+  "version": "1.1.0",
+  "release_date": "2026-07-29",
+  "rulesets": {
+    "L3_brand": "ruleset_L3_brand.yaml",
+    "L4_struct": "ruleset_L4_struct.yaml",
+    "L4_material": "ruleset_L4_material.yaml",
+    "L4_logic": "ruleset_L4_logic.yaml"
+  },
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-29",
+      "description": "P1 阶段：新增 L3 品牌格式规则集，审计日志持久化"
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-07-29",
+      "description": "初版发布，包含结构计算、材料参数、逻辑一致性三类规则集"
+    }
+  ]
+}

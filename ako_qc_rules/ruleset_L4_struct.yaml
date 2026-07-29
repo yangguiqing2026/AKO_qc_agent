@@ -1,0 +1,121 @@
+# ============================================================
+# ruleset_L4_struct.yaml — 结构计算规则集
+# AKO_qc_agent L4 业务逻辑校验
+# ============================================================
+
+ruleset_id: L4_struct
+version: "1.0.0"
+description: 结构计算相关数值校验规则
+
+rules:
+  # ---- 配筋率校验 ----
+  - rule_id: L4-001
+    name: 最小配筋率校验
+    description: 受弯构件纵向受拉钢筋最小配筋率不得低于规范值
+    target_field: reinforcement_ratio
+    condition:
+      operator: less_than
+      reference: material.min_reinforcement_rate
+      reference_value: 0.002  # ρ_min = 0.2%
+    severity: ERROR
+    error_msg: "配筋率 {value} 低于规范最小值 {reference}（ρ_min = 0.2%）"
+
+  - rule_id: L4-002
+    name: 最大配筋率校验
+    description: 受弯构件纵向受拉钢筋最大配筋率不得超过规范上限
+    target_field: reinforcement_ratio
+    condition:
+      operator: greater_than
+      reference_value: 0.04  # ρ_max = 4%
+    severity: ERROR
+    error_msg: "配筋率 {value} 超过规范最大值 {reference}（ρ_max = 4%）"
+
+  # ---- 混凝土强度校验 ----
+  - rule_id: L4-003
+    name: 混凝土轴心抗压强度范围
+    description: 混凝土轴心抗压强度设计值应在合理范围内
+    target_field: concrete_compressive_strength
+    condition:
+      operator: range
+      min: 7.2    # C15
+      max: 29.6   # C50
+    severity: ERROR
+    error_msg: "混凝土轴心抗压强度设计值 {value} N/mm² 超出合理范围 [7.2, 29.6]"
+
+  # ---- 挠度校验 ----
+  - rule_id: L4-004
+    name: 挠度限值校验
+    description: 构件挠度不得超过规范允许值
+    target_field: deflection
+    condition:
+      operator: greater_than
+      reference: span.deflection_limit
+      reference_value: 0.0  # 需根据跨度计算，此处为占位
+    severity: ERROR
+    error_msg: "构件挠度 {value} mm 超过允许限值 {reference} mm"
+
+  # ---- 裂缝宽度校验 ----
+  - rule_id: L4-005
+    name: 裂缝宽度限值
+    description: 最大裂缝宽度不得超过 0.3mm（一般环境）
+    target_field: crack_width
+    condition:
+      operator: greater_than
+      reference_value: 0.3
+    severity: ERROR
+    error_msg: "裂缝宽度 {value} mm 超过限值 0.3 mm"
+
+  # ---- 轴压比校验 ----
+  - rule_id: L4-006
+    name: 柱轴压比限值
+    description: 柱轴压比不得超过规范限值（框架柱一般取 0.65~0.9）
+    target_field: axial_compression_ratio
+    condition:
+      operator: greater_than
+      reference_value: 0.9
+    severity: ERROR
+    error_msg: "柱轴压比 {value} 超过限值 0.9"
+
+  # ---- 剪压比校验 ----
+  - rule_id: L4-007
+    name: 剪压比限值
+    description: 剪压比不得超过 0.15（一般梁）
+    target_field: shear_compression_ratio
+    condition:
+      operator: greater_than
+      reference_value: 0.15
+    severity: ERROR
+    error_msg: "剪压比 {value} 超过限值 0.15"
+
+  # ---- 保护层厚度校验 ----
+  - rule_id: L4-008
+    name: 保护层厚度最小值
+    description: 钢筋保护层厚度不得小于规范最小值（板墙 15mm，梁柱 20mm）
+    target_field: cover_thickness
+    condition:
+      operator: less_than
+      reference_value: 15
+    severity: ERROR
+    error_msg: "保护层厚度 {value} mm 小于最小值 15 mm"
+
+  # ---- 高厚比校验 ----
+  - rule_id: L4-009
+    name: 高厚比限值
+    description: 墙体验算高厚比不得超过允许值（一般取 24）
+    target_field: height_thickness_ratio
+    condition:
+      operator: greater_than
+      reference_value: 24
+    severity: ERROR
+    error_msg: "高厚比 {value} 超过限值 24"
+
+  # ---- 耐火极限校验（陶粒墙板专项）----
+  - rule_id: L4-010
+    name: 陶粒墙板耐火极限
+    description: 陶粒墙板耐火极限不得低于设计要求（企业标准 3h）
+    target_field: fire_resistance
+    condition:
+      operator: less_than
+      reference_value: 3.0
+    severity: ERROR
+    error_msg: "陶粒墙板耐火极限 {value} h 低于企业标准最小值 3.0 h"

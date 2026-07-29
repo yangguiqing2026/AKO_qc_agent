@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "queue": [
+    {
+      "commit": "unknown",
+      "branch": "unknown",
+      "remotes": [
+        "origin",
+        "gitee"
+      ],
+      "timestamp": "2026-07-29T06:23:46.157Z",
+      "retry_count": 2,
+      "status": "pending",
+      "last_error": "Cannot determine current branch",
+      "fix_applied": []
+    },
+    {
+      "commit": "unknown",
+      "branch": "unknown",
+      "remotes": [
+        "origin",
+        "gitee"
+      ],
+      "timestamp": "2026-07-29T06:21:36.854Z",
+      "retry_count": 0,
+      "status": "pending",
+      "last_error": "Cannot determine current branch",
+      "fix_applied": []
+    }
+  ]
+}
