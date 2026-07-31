@@ -1,0 +1,41 @@
+agent_id: AKO_qc
+name: Qc Agent
+version: 1.0.0
+author: AKO_studio
+created_date: '2026-07-30'
+updated_date: '2026-07-31'
+status: dev
+
+description: >
+  质检Agent：对AKO体系Agent执行标准化出厂质检，输出合规报告和返修工单
+
+capabilities:
+  - "四维度质检评分"
+  - "一票否决项检查"
+  - "返修工单生成"
+  - "QC报告汇总"
+
+category: ['quality']
+interface_type: cli
+
+dependencies:
+  - python>=3.9
+
+interfaces:
+  input: "CLI参数 / 配置文件"
+  output: "结果文件 / 日志"
+
+health_probe:
+  endpoint: /health
+  expected_response: ok
+
+registry:
+  registry_agent: AKO_registry_agent
+  registered: false
+
+tags:
+  - "qc"
+  - "quality"
+  - "compliance"
+
+entry_point: main.py
