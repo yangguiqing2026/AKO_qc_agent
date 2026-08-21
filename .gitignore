@@ -3,4 +3,9 @@ __pycache__/
 *.pyo
 *.db
 .DS_Store
-.env
+
+# 运行时产物
+logs/*.log
+qc_report.json
+push_queue.json
+*.bak

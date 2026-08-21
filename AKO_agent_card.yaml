@@ -1,188 +1,239 @@
+﻿# ============================================
+# AKO_agent_card.yaml
+# Agent: AKO_qc_agent（质检员）
+# Author: AKO_studio
+# ============================================
+
 agent_id: AKO_qc_agent
-name: AKO QC Agent（质检员）
+name: AKO_qc_agent
 name_zh: 阿格质检Agent
-version: 1.0.0
+version: v1.0.0
 author: AKO_studio
+
+# 等级：S（已闭环、可交付）/ A（核心功能稳定）/ B（开发中）/ C（脚手架）
+level: S
 category: ['quality']
 interface_type: cli
-status: production
-description: AKO_Hub 出厂质量门（Quality Gate）。按 law_v1.0 标准对所有生产型 Agent 输出执行五层检测（L1契约→L2知识库→L3品牌→L4业务逻辑→L5安全），输出结构化 qc_report.json。支持审计模式与拦截模式双态运行。
+status: offline
+description: AKO_Hub 出厂质量门，执行五层质检并输出报告。
+
+# ---- 实例身份（《实例身份庭法》/《命名规范》§6.3）----
+instance_id: AKO_qc_agent
+legal_entity: "91520198MAC8N3YB6U"
+machine_uri: "ako://agent/quality/qc_agent/v1.0.0"
+lineage:
+  - family: "rule_engine"
+    version: "v1.0.0"
+    base_model: "deterministic"
+former_names: []
+lifecycle_state: "staging"
+
+# ---- 命令清单（≥4，snake_case）----
+commands:
+  - name: run_qc
+    description: 执行五层质检，输出结构化 qc_report.json
+  - name: check_rules
+    description: 规则引擎自检，校验 ako_qc_rules 规则集完整性
+  - name: serve_health
+    description: 启动健康检查 HTTP 服务（/health）
+  - name: audit_query
+    description: 查询审计日志（qc_audit_log.db）
+
 capabilities:
-- id: cap_l1_contract
-  name: L1 契约合规检测
-  description: JSON Schema 验证、字段必填、类型正确、工程编号格式、材料标号白名单校验
-  input:
-  - name: upstream_output
-    type: json
-    required: true
-    description: 上游 Agent 完整输出
-  - name: expected_schema
-    type: json
-    required: true
-    description: 预期 JSON Schema
-  output:
-  - name: l1_report
-    type: json
-    description: 契约合规报告
-  priority: P0
-- id: cap_l2_kb_consistency
-  name: L2 知识库一致性
-  description: 关键事实可溯源、禁止通用填补、来源标注、版本时效、引用完整性校验（LLM语义比对+向量检索）
-  input:
-  - name: upstream_output
-    type: json
-    required: true
-  - name: kb_context
-    type: list
-    required: true
-    description: 知识库检索上下文
-  output:
-  - name: l2_report
-    type: json
-    description: 知识库一致性报告
-  priority: P0
-- id: cap_l3_brand
-  name: L3 品牌与格式规范
-  description: AKO色系合规（#EBDAB9/#231E1C等）、AI痕迹检测、编号体系统一
-  input:
-  - name: upstream_output
-    type: json_or_text
-    required: true
-  output:
-  - name: l3_report
-    type: json
-    description: 品牌格式报告（WARN级不拦截）
-  priority: P1
-- id: cap_l4_logic
-  name: L4 业务逻辑校验
-  description: 数值区间校验、参数自洽、逻辑一致性、精度单位检查（调用 ako_qc_rules_engine 确定性规则引擎）
-  input:
-  - name: upstream_output
-    type: json
-    required: true
-  output:
-  - name: l4_report
-    type: json
-    description: 业务逻辑校验报告
-  priority: P0
-- id: cap_l5_security
-  name: L5 安全与敏感信息
-  description: 本地路径泄露、凭证Token泄露、内网域名暴露检测
-  input:
-  - name: upstream_output
-    type: json_or_text
-    required: true
-  output:
-  - name: l5_report
-    type: json
-    description: 安全检测报告
-  priority: P0
-- id: cap_rules_engine
-  name: 规则引擎
-  description: 加载 ako_qc_rules collection 中的结构化规则（YAML/JSON），执行 L4 数值判定，与 LLM 推理完全解耦
-  input:
-  - name: ruleset_name
-    type: string
-    required: true
-  - name: version
-    type: string
-    required: true
-  output:
-  - name: rule_report
-    type: json
-    description: 规则引擎专项报告
-  priority: P0
+  - id: cap_l1_contract
+    name: L1 契约合规检测
+    description: JSON Schema 验证、字段必填、类型正确、工程编号格式、材料标号白名单校验
+    input:
+      - name: upstream_output
+        type: json
+        required: true
+        description: 上游 Agent 完整输出
+      - name: expected_schema
+        type: json
+        required: true
+        description: 预期 JSON Schema
+    output:
+      - name: l1_report
+        type: json
+        description: 契约合规报告
+    priority: P0
+  - id: cap_l2_kb_consistency
+    name: L2 知识库一致性
+    description: 关键事实可溯源、禁止通用填补、来源标注、版本时效、引用完整性校验
+    input:
+      - name: upstream_output
+        type: json
+        required: true
+      - name: kb_context
+        type: list
+        required: true
+        description: 知识库检索上下文
+    output:
+      - name: l2_report
+        type: json
+        description: 知识库一致性报告
+    priority: P0
+  - id: cap_l3_brand
+    name: L3 品牌与格式规范
+    description: AKO 色系合规、AI 痕迹检测、编号体系统一
+    input:
+      - name: upstream_output
+        type: json_or_text
+        required: true
+    output:
+      - name: l3_report
+        type: json
+        description: 品牌格式报告（WARN 级不拦截）
+    priority: P1
+  - id: cap_l4_logic
+    name: L4 业务逻辑校验
+    description: 数值区间校验、参数自洽、逻辑一致性、精度单位检查（确定性规则引擎）
+    input:
+      - name: upstream_output
+        type: json
+        required: true
+    output:
+      - name: l4_report
+        type: json
+        description: 业务逻辑校验报告
+    priority: P0
+  - id: cap_l5_security
+    name: L5 安全与敏感信息
+    description: 本地路径泄露、凭证 Token 泄露、内网域名暴露检测
+    input:
+      - name: upstream_output
+        type: json_or_text
+        required: true
+    output:
+      - name: l5_report
+        type: json
+        description: 安全检测报告
+    priority: P0
+  - id: cap_rules_engine
+    name: 规则引擎
+    description: 加载 ako_qc_rules 结构化规则集，执行 L4 数值判定，与 LLM 推理解耦
+    input:
+      - name: ruleset_name
+        type: string
+        required: true
+      - name: version
+        type: string
+        required: true
+    output:
+      - name: rule_report
+        type: json
+        description: 规则引擎专项报告
+    priority: P0
+
 architecture:
   language: Python
   framework: LangGraph
   entry_point: src/core/main.py
   config_files:
-  - config/default.yaml
-  - secrets.env
+    - config/AKO_qc_agent_config.yaml
+    - .env
   dependencies:
-  - requirements.txt
-  - AKO_agent_sdk_v2.py
-  - ako_qc_rules_engine.py
+    - requirements.txt
+    - ako_qc_rules_engine.py
+    - ako_qc_audit_log.py
+    - ako_qc_inbound_agent.py
+
+# ---- 运行时（CLI 默认；--serve 提供 /health）----
 runtime:
   endpoint: http://localhost:5001
-  heartbeat_interval: 60
+  heartbeat_interval: 30
   last_heartbeat: ''
-  status: ''
+  status: offline
   pid: 0
   start_time: ''
+
+# ---- 健康检查（G-16 ~ G-18）----
+health:
+  enabled: true
+  endpoint: /health
+  interval_seconds: 30
+  expected_response: ok
+
+# ---- 心跳（G-19 ~ G-20）----
+heartbeat:
+  enabled: true
+  interval_seconds: 30
+
+# ---- 静默窗口（G-21 ~ G-22）----
+silent_window:
+  enabled: true
+  duration_minutes: 30
+
+# ---- 注册（G-23）----
+registry:
+  enabled: true
+  registry_agent: AKO_registry_agent
+  registered: false
+
+# ---- 告警（G-24）----
+alert:
+  enabled: true
+
+# ---- 内存监控（G-25）----
+memory_watch:
+  enabled: true
+
+# ---- 调用模式（G-26，与等级匹配）----
+sync: false
+
+# ---- 凭证（G-27 ~ G-29）----
+secrets:
+  env_file: .env
+
 org:
   department: 技术中心
   product_line: AKO_qc_system
-  reports_to: AKO_hub
+  reports_to: AKO_hub_agent
   team: 质量合规组
+
 dependencies:
-- agent_id: AKO_hub
-  type: reports_to
-  required: true
-  description: 任务分发上级
-- agent_id: AKO_law_agent
-  type: notify
-  required: true
-  description: 严重违规触发 law_agent 审查
-- agent_id: AKO_registry_agent
-  type: read
-  required: true
-  description: 读取 Agent 注册信息
+  - agent_id: AKO_hub_agent
+    type: reports_to
+    required: true
+    description: 任务分发上级
+  - agent_id: AKO_law_agent
+    type: notify
+    required: true
+    description: 严重违规触发 law_agent 审查
+  - agent_id: AKO_registry_agent
+    type: read
+    required: true
+    description: 读取 Agent 注册信息
+
 metadata:
   created: '2026-07-29'
-  updated: '2026-07-31'
+  updated: '2026-08-21'
   tags:
-  - 技术/AI-Agent
-  - 工作/质控
-  - 资料/规范
+    - quality
+    - compliance
+    - audit
+    - standard
+    - agent
   documents:
     whitepaper:
-      filename: AKO_qc_agent_whitepaper_v1.0.md
-      path: ./AKO_qc_agent_whitepaper_v1.0.md
-      version: 1.0.0
+      filename: AKO_qc_agent_whitepaper_v1.0.0.md
+      path: ./AKO_qc_agent_whitepaper_v1.0.0.md
+      version: v1.0.0
       status: production
       last_verified: ''
-health:
-  enabled: true
-  probe_interval: 60
-  business_probes:
-  - name: 核心功能自检
-    enabled: true
-    timeout: 30
-  - name: 规则引擎加载
-    enabled: true
-    timeout: 10
-  - name: 依赖服务可用
-    enabled: true
-    timeout: 5
-  system_probes:
-  - name: CPU使用率
-    enabled: true
-    threshold: 80
-  - name: 内存使用率
-    enabled: true
-    threshold: 80
-  - name: 磁盘空间
-    enabled: true
-    threshold: 80
-  - name: 网络连通
-    enabled: true
-    timeout: 5
+
+# ---- 标签（仅 Frontmatter，48 叶子白名单）----
 tags:
-- qc
-- quality
-- compliance
-- audit
-- batch_ready
+  - quality
+  - compliance
+  - audit
+  - standard
+  - agent
+
 interfaces:
   input: JSON / CLI parameters
   output: qc_report.json / logs
-health_probe:
-  endpoint: /health
-  expected_response: ok
-registry:
-  registry_agent: AKO_registry_agent
-  registered: false
+
 compliance:
   law_version: law_v1.0
   self_assessment:
